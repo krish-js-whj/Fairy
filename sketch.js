@@ -5,7 +5,7 @@ var star, starBody;
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
-var engine, world, fairy,canvas;
+var engine, world,canvas;
 function preload()
 {
 	starImg = loadImage("images/star.png");
@@ -19,11 +19,11 @@ function setup() {
 
 	fairyVoice.play();
 
-	fairy1= new Fairy(130, 520);
-	fairy1.debug=true
-	fairy1.setCollider("rectangle",500,-75,150,150)
-	fairy1.addAnimation("fairyflying",fairyImg);  
-	fairy1.scale =0.25;
+	fairy= createSprite(130, 520);
+	//fairy.debug=true
+	//fairy.setCollider("rectangle",500,-75,150,150)
+	fairy.addAnimation("fairyflying",fairyImg);  
+	fairy.scale =0.25;
 
 	star = createSprite(650,30);
 	star.addImage(starImg);
@@ -32,11 +32,9 @@ function setup() {
 	engine = Engine.create();
 	world = engine.world;
 
-	star.Body = Bodies.circle(650 , 30 , 5 , {restitution:0.5, isStatic:true});
+	starBody = Bodies.circle(650 , 30 , 5 , {restitution:0.5, isStatic:true});
 	World.add(world, starBody);
-	
-	
-	
+		
 	Engine.run(engine);
 
 }
@@ -44,17 +42,26 @@ function setup() {
 
 function draw() {
   background(bgImg);
+  star.x= starBody.position.x
+  star.y= starBody.position.y
   Engine.update(engine);
-fairy1.display()
-
-  drawSprites();
+fairy.display()
+console.log(star.y)
+if (star.y> 470 && starBody.position.y > 470){
+	Matter.Body.setStatic(starBody,true);
+}
+  drawSprites();}
+  //keyPressed()
   //display()	var pos =star.Body.position;var angle= star.Body.angle;	push();translate(pos.x,pos.y)rotate(angle)rectMode(CENTER);fill("yellow ochre");rect(0,0,star.width, star.height);pop()
+function keyPressed(){
+if (keyCode===LEFT_ARROW){
+	fairy.x-=50
+}
+if (keyCode===RIGHT_ARROW){
+	fairy.x+=50
+}
+if (keyCode===DOWN_ARROW){
+	Matter.Body.setStatic(starBody,false)
+}}
 
-if (keyDown("left")){
-	fairy1.x-=10
-}
-if (keyDown("right")){
-	fairy1.x+=10
-}
-}
 
